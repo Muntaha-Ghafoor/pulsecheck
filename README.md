@@ -1,6 +1,6 @@
 # 🩺 PulseCheck
 
-**PulseCheck** is a simple, interactive command-line tool built in Bash that checks whether a target host or IP address is reachable on the network. It wraps the standard `ping` utility in a clean, colorized, and user-friendly interface — making it a great starting point for learning shell scripting and building network utilities.
+**PulseCheck** is an interactive, menu-driven command-line tool built in Bash for checking network reachability, tracing routes, scanning ports, monitoring hosts live, and scanning multiple targets at once — all with color-coded output and persistent history logging.
 
 ```
   ____        _          ____ _               _  
@@ -14,11 +14,16 @@
 
 ## 📋 Features
 
-- Interactive prompt for target host/IP input
-- Sends 4 ICMP ping packets to the target
-- Color-coded output — **green** for success, **red** for failure
-- Clean ASCII banner interface
-- Lightweight — no dependencies beyond standard Bash and `ping`
+| Feature | Description |
+|---|---|
+| **Ping Check** | Test if a single host or IP is reachable |
+| **Traceroute** | Trace the network path to a target, hop by hop |
+| **Port Check** | Check one or multiple ports at once (e.g. `22,80,443`) |
+| **Monitor Mode** | Continuously watch a host and report live UP/DOWN status changes |
+| **Bulk Scan** | Scan a whole list of hosts from a file, with a summary report |
+| **History Log** | Every check is saved with a timestamp to `~/.pulsecheck_history.log` |
+
+All results use color-coded output — green for success, red for failure, yellow for warnings.
 
 ---
 
@@ -26,52 +31,72 @@
 
 - A Unix-like OS (Linux, macOS, WSL, Kali, etc.)
 - Bash shell
-- `ping` utility (pre-installed on virtually all systems)
+- `ping` (pre-installed on virtually all systems)
+- `traceroute` (optional — install with `sudo apt install traceroute` if missing)
 
 ---
 
 ## 🚀 Installation
 
-Clone the repository:
+### Option 1 — One-line install (recommended)
+
+```bash
+curl -sSL https://raw.githubusercontent.com/Muntaha-Ghafoor/pulsecheck/main/install.sh | bash
+```
+
+This installs PulseCheck as a system-wide command. Run it from anywhere with:
+```bash
+pulsecheck
+```
+
+### Option 2 — Clone the repository
 
 ```bash
 git clone https://github.com/Muntaha-Ghafoor/pulsecheck.git
 cd pulsecheck
-```
-
-Make the script executable:
-
-```bash
 chmod +x pulsecheck.sh
+./pulsecheck.sh
 ```
 
 ---
 
 ## ▶️ Usage
 
-Run the script:
-
-```bash
-./pulsecheck.sh
-```
-
-You'll be prompted to enter a target:
+Run the script and choose an option from the menu:
 
 ```
-Enter your Target: google.com
+  1) Ping Check
+  2) Traceroute
+  3) Port Check
+  4) Monitor Mode (live, repeated checks)
+  5) Bulk Scan (scan a list of hosts from a file)
+  6) View History
+  7) Exit
 ```
 
-The tool will ping the target 4 times and report whether it's reachable:
+### Example — Port Check (multiple ports)
+```
+Enter target host or IP: google.com
+Enter port number(s) [e.g. 22 or 22,80,443]: 22,443
+```
 
+### Example — Bulk Scan
+Create a text file with one host per line:
 ```
-SUCCESS: google.com is reachable.
+# hosts.txt
+8.8.8.8
+google.com
+192.168.1.1
+```
+Then select **Bulk Scan** and provide the file path (e.g. `hosts.txt`). PulseCheck scans each host and prints a summary:
+```
+Total hosts checked : 3
+Reachable (UP)       : 2
+Unreachable (DOWN)   : 1
 ```
 
-or
-
-```
-FAILED: 192.168.1.999 is NOT reachable.
-```
+### Example — Monitor Mode
+Continuously pings a target at a set interval and logs only when its status changes (UP → DOWN or DOWN → UP). Stop anytime with `CTRL+C`.
 
 ---
 
@@ -79,7 +104,8 @@ FAILED: 192.168.1.999 is NOT reachable.
 
 ```
 pulsecheck/
-├── pulsecheck.sh   # Main script
+├── pulsecheck.sh   # Main tool
+├── install.sh      # One-line installer script
 └── README.md       # Project documentation
 ```
 
@@ -87,12 +113,10 @@ pulsecheck/
 
 ## 🗺️ Roadmap
 
-Planned features for future versions:
-
-- [ ] Menu-driven interface (ping, traceroute, port scan)
-- [ ] Accept target as a command-line argument
-- [ ] Log results to a file with timestamps
-- [ ] Support for scanning multiple targets from a list
+- [ ] JSON/CSV export of scan results
+- [ ] Config file for saving frequently-checked hosts
+- [ ] ASCII latency graph for Monitor Mode
+- [ ] Desktop notifications on host status change
 
 ---
 
